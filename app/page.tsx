@@ -15,29 +15,6 @@ const LANG_CULTURE: Record<string, string> = {
 };
 const STRENGTH_LABEL = ["", "버릇없게 😤", "약하게", "기본", "정중하게", "극존칭 😰"];
 
-const XL = {
-  bg: "#ffffff",
-  gridBg: "#f2f2f2",
-  headerBg: "#217346",
-  headerTxt: "#ffffff",
-  rowBg: "#ffffff",
-  rowAlt: "#f8f8f8",
-  border: "#d0d0d0",
-  borderDark: "#a0a0a0",
-  cellSelect: "#e8f4e8",
-  cellSelectBorder: "#217346",
-  txt: "#1a1a1a",
-  txt2: "#666666",
-  toolbarBg: "#f3f3f3",
-  toolbarBorder: "#d0d0d0",
-  accent: "#217346",
-  accentLight: "#e8f4e8",
-  btnBg: "#ffffff",
-  btnHover: "#e8e8e8",
-  red: "#c00000",
-  blue: "#1f5c99",
-};
-
 function useTheme() {
   const [dark, setDark] = useState(false);
   const toggle = () => setDark(d => !d);
@@ -46,6 +23,17 @@ function useTheme() {
 
 export default function Home() {
   const { dark, toggle } = useTheme();
+
+  const bg = dark ? "#1a1a1a" : "#f5f5f3";
+  const surface = dark ? "#242424" : "#ffffff";
+  const surface2 = dark ? "#2e2e2e" : "#f0efeb";
+  const border = dark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)";
+  const txt = dark ? "#e8e8e6" : "#1a1a18";
+  const txt2 = dark ? "#888884" : "#777772";
+  const accent = "#7f77dd";
+  const accentBg = dark ? "#2a2850" : "#eeedfe";
+  const accentTxt = dark ? "#afa9ec" : "#534ab7";
+
   const [input, setInput] = useState("");
   const [relation, setRelation] = useState(0);
   const [strength, setStrength] = useState(3);
@@ -99,313 +87,233 @@ export default function Home() {
     setTranslating(false);
   };
 
-  const cell = (content: React.ReactNode, w?: string, bg?: string, bold?: boolean, center?: boolean) => (
-    <td style={{
-      border: `1px solid ${XL.border}`, padding: "4px 8px",
-      width: w, background: bg || XL.rowBg,
-      fontWeight: bold ? 600 : 400,
-      textAlign: center ? "center" : "left",
-      fontSize: 13, color: XL.txt, whiteSpace: "nowrap",
-    }}>{content}</td>
-  );
-
   const diagColor = (d: string) => {
-    if (d === "쿠션어 과다") return XL.red;
-    if (d === "쿠션어 부족") return XL.blue;
-    return XL.accent;
+    if (d === "쿠션어 과다") return { bg: dark ? "#2a1f1a" : "#faece7", txt: dark ? "#f0997b" : "#993c1d" };
+    if (d === "쿠션어 부족") return { bg: dark ? "#1a2030" : "#e6f1fb", txt: dark ? "#85b7eb" : "#185fa5" };
+    return { bg: dark ? "#1a2a1f" : "#eaf3de", txt: dark ? "#97c459" : "#3b6d11" };
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: XL.bg, fontFamily: "'Malgun Gothic', '맑은 고딕', sans-serif", fontSize: 13 }}>
+    <div style={{ minHeight: "100vh", background: bg, color: txt, fontFamily: "sans-serif", transition: "background 0.3s" }}>
+      <div style={{ maxWidth: 680, margin: "0 auto", padding: "2rem 1rem 4rem" }}>
 
-      {/* 상단 타이틀 바 */}
-      <div style={{ background: XL.headerBg, padding: "6px 16px", display: "flex", alignItems: "center", gap: 12 }}>
-        <span style={{ color: XL.headerTxt, fontSize: 14, fontWeight: 700 }}>📊 개떡같이 말해도 찰떡같이.xlsx</span>
-        <span style={{ color: "rgba(255,255,255,0.6)", fontSize: 11 }}>— 저장됨</span>
-      </div>
+        {/* Header */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
+          <div>
+            <h1 style={{ fontSize: 22, fontWeight: 500, margin: 0, color: txt }}>개떡같이 말해도 찰떡같이</h1>
+            <p style={{ fontSize: 13, color: txt2, margin: "4px 0 0" }}>거지같이 말해도 상황에 맞게 자동 조정해드려요</p>
+          </div>
+          <button onClick={toggle} style={{
+            background: surface2, border: `0.5px solid ${border}`, borderRadius: 20,
+            padding: "6px 14px", fontSize: 13, color: txt2, cursor: "pointer"
+          }}>
+            {dark ? "🌙 다크" : "☀️ 라이트"}
+          </button>
+        </div>
 
-      {/* 툴바 */}
-      <div style={{ background: XL.toolbarBg, borderBottom: `1px solid ${XL.toolbarBorder}`, padding: "4px 8px", display: "flex", gap: 4, alignItems: "center", flexWrap: "wrap" }}>
-        {[
-          { key: "auto", label: "🤖 자동" },
-          { key: "gemini", label: "✦ Gemini" },
-          { key: "groq-70b", label: "⚡ 70B" },
-          { key: "groq-8b", label: "⚡ 8B" },
-        ].map(m => (
-          <button key={m.key} onClick={() => setModel(m.key)} style={{
-            background: model === m.key ? XL.accentLight : XL.btnBg,
-            border: `1px solid ${model === m.key ? XL.accent : XL.borderDark}`,
-            padding: "2px 10px", fontSize: 12, cursor: "pointer",
-            color: model === m.key ? XL.accent : XL.txt, borderRadius: 2,
-            fontWeight: model === m.key ? 600 : 400,
-          }}>{m.label}</button>
-        ))}
-        <div style={{ width: 1, height: 20, background: XL.borderDark, margin: "0 4px" }} />
-        <span style={{ fontSize: 11, color: XL.txt2 }}>쿠션어 강도:</span>
-        <input type="range" min={1} max={5} step={1} value={strength}
-          onChange={e => setStrength(Number(e.target.value))}
-          style={{ accentColor: XL.accent, width: 100 }} />
-        <span style={{ fontSize: 11, color: XL.accent, fontWeight: 600, minWidth: 80 }}>
-          {strength}단계 · {STRENGTH_LABEL[strength]}
-        </span>
-      </div>
+        {/* 상대방 선택 */}
+        <div style={{ marginBottom: "1rem" }}>
+          <p style={{ fontSize: 13, color: txt2, marginBottom: 8 }}>상대방</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8 }}>
+            {RELATIONS.map((r, i) => (
+              <button key={r} onClick={() => setRelation(i)} style={{
+                background: relation === i ? accentBg : surface,
+                border: `0.5px solid ${relation === i ? accent : border}`,
+                borderRadius: 10, padding: "10px 14px", textAlign: "left",
+                cursor: "pointer", transition: "all 0.15s"
+              }}>
+                <div style={{ fontSize: 14, fontWeight: 500, color: relation === i ? accentTxt : txt }}>{r}</div>
+                <div style={{ fontSize: 11, color: relation === i ? accentTxt : txt2, marginTop: 2, opacity: 0.8 }}>{RELATION_DESC[i]}</div>
+              </button>
+            ))}
+          </div>
+        </div>
 
-      {/* 수식 입력줄 */}
-      <div style={{ background: XL.toolbarBg, borderBottom: `1px solid ${XL.toolbarBorder}`, padding: "3px 8px", display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ fontSize: 11, color: XL.txt2, minWidth: 40 }}>A1</span>
-        <div style={{ width: 1, height: 16, background: XL.borderDark }} />
-        <span style={{ fontSize: 12, color: XL.txt2 }}>fx</span>
-        <span style={{ fontSize: 12, color: XL.txt }}>= CUSHION(원문, 상대방, 강도)</span>
-      </div>
+        {/* 강도 슬라이더 */}
+        <div style={{ background: surface, border: `0.5px solid ${border}`, borderRadius: 10, padding: "14px 16px", marginBottom: "1rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+            <p style={{ fontSize: 13, color: txt2, margin: 0 }}>쿠션어 강도</p>
+            <span style={{ fontSize: 12, fontWeight: 500, color: accentTxt, background: accentBg, padding: "3px 10px", borderRadius: 20 }}>
+              {strength}단계 · {STRENGTH_LABEL[strength]}
+            </span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 11, color: txt2 }}>약함</span>
+            <input type="range" min={1} max={5} step={1} value={strength}
+              onChange={e => setStrength(Number(e.target.value))}
+              style={{ flex: 1, accentColor: accent }} />
+            <span style={{ fontSize: 11, color: txt2 }}>강함</span>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, padding: "0 1px" }}>
+            {[1,2,3,4,5].map(n => (
+              <span key={n} style={{ fontSize: 10, color: strength === n ? accentTxt : txt2, fontWeight: strength === n ? 500 : 400, width: 20, textAlign: "center" }}>{n}</span>
+            ))}
+          </div>
+        </div>
 
-      <div style={{ display: "flex", height: "calc(100vh - 95px)" }}>
-
-        {/* 행 번호 */}
-        <div style={{ minWidth: 40, background: XL.gridBg, borderRight: `1px solid ${XL.border}` }}>
-          {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20].map(n => (
-            <div key={n} style={{ height: 24, borderBottom: `1px solid ${XL.border}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: XL.txt2 }}>{n}</div>
+        {/* 모델 선택 */}
+        <div style={{ display: "flex", gap: 6, marginBottom: "1rem", flexWrap: "wrap" }}>
+          {[
+            { key: "auto", label: "🤖 자동" },
+            { key: "gemini", label: "✦ Gemini" },
+            { key: "groq-70b", label: "⚡ Groq 70B" },
+            { key: "groq-8b", label: "⚡ Groq 8B" },
+          ].map(m => (
+            <button key={m.key} onClick={() => setModel(m.key)} style={{
+              background: model === m.key ? accentBg : surface2,
+              border: `0.5px solid ${model === m.key ? accent : border}`,
+              borderRadius: 20, padding: "5px 12px", fontSize: 12,
+              color: model === m.key ? accentTxt : txt2, cursor: "pointer"
+            }}>{m.label}</button>
           ))}
         </div>
 
-        {/* 메인 그리드 */}
-        <div style={{ flex: 1, overflow: "auto" }}>
-          <table style={{ borderCollapse: "collapse", width: "100%", tableLayout: "fixed" }}>
-            <thead>
-              <tr style={{ background: XL.gridBg, height: 24 }}>
-                {["A (상대방)", "B (원문 메시지)", "C (결과)", "D (진단)", "E (비고)"].map((h, i) => (
-                  <th key={i} style={{
-                    border: `1px solid ${XL.border}`, padding: "3px 8px",
-                    fontSize: 11, color: XL.txt2, fontWeight: 600, textAlign: "center",
-                    background: XL.gridBg, width: i === 1 || i === 2 ? "28%" : i === 0 ? "14%" : "15%"
-                  }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {/* 행 1: 상대방 선택 */}
-              <tr style={{ height: 24 }}>
-                {cell(<span style={{ color: XL.txt2, fontSize: 11 }}>상대방 선택 ▼</span>, "14%", XL.accentLight, true)}
-                <td colSpan={4} style={{ border: `1px solid ${XL.border}`, padding: "2px 8px", background: XL.rowBg }}>
-                  <div style={{ display: "flex", gap: 4 }}>
-                    {RELATIONS.map((r, i) => (
-                      <button key={r} onClick={() => setRelation(i)} style={{
-                        background: relation === i ? XL.accent : XL.btnBg,
-                        border: `1px solid ${relation === i ? XL.accent : XL.borderDark}`,
-                        color: relation === i ? "#fff" : XL.txt,
-                        padding: "1px 10px", fontSize: 11, cursor: "pointer", borderRadius: 2,
-                        fontWeight: relation === i ? 600 : 400,
-                      }}>{r}</button>
-                    ))}
-                  </div>
-                </td>
-              </tr>
-
-              {/* 행 2: 서브텍스트 */}
-              <tr style={{ height: 18 }}>
-                {cell("", "14%", XL.rowAlt)}
-                <td colSpan={4} style={{ border: `1px solid ${XL.border}`, padding: "1px 8px", background: XL.rowAlt }}>
-                  <span style={{ fontSize: 11, color: XL.txt2 }}>{RELATION_DESC[relation]}</span>
-                </td>
-              </tr>
-
-              {/* 빈 행 */}
-              <tr style={{ height: 18 }}>
-                {cell("", "14%", XL.rowBg)}
-                <td colSpan={4} style={{ border: `1px solid ${XL.border}`, background: XL.rowBg }} />
-              </tr>
-
-              {/* 행 4: 원문 입력 */}
-              <tr style={{ height: 100 }}>
-                {cell("원문 입력", "14%", XL.accentLight, true, true)}
-                <td colSpan={4} style={{ border: `2px solid ${XL.cellSelectBorder}`, padding: 4, background: XL.cellSelect }}>
-                  <textarea
-                    value={input}
-                    onChange={e => setInput(e.target.value.slice(0, 500))}
-                    placeholder="평소 말투로 그냥 써주세요..."
-                    style={{
-                      width: "100%", height: 80, border: "none", outline: "none",
-                      background: "transparent", fontSize: 13, fontFamily: "inherit",
-                      resize: "none", color: XL.txt,
-                    }}
-                  />
-                  <div style={{ textAlign: "right", fontSize: 10, color: input.length > 450 ? XL.red : XL.txt2 }}>
-                    {input.length}/500
-                  </div>
-                </td>
-              </tr>
-
-              {/* 빈 행 */}
-              <tr style={{ height: 18 }}>
-                {cell("", "14%", XL.rowBg)}
-                <td colSpan={4} style={{ border: `1px solid ${XL.border}`, background: XL.rowBg }} />
-              </tr>
-
-              {/* 행 6: 실행 버튼 */}
-              <tr style={{ height: 28 }}>
-                {cell("함수 실행", "14%", XL.gridBg, true, true)}
-                <td colSpan={4} style={{ border: `1px solid ${XL.border}`, padding: "3px 8px", background: XL.rowBg }}>
-                  <button onClick={analyze} disabled={loading || !input.trim()} style={{
-                    background: loading || !input.trim() ? XL.gridBg : XL.accent,
-                    color: loading || !input.trim() ? XL.txt2 : "#fff",
-                    border: `1px solid ${loading || !input.trim() ? XL.borderDark : XL.accent}`,
-                    padding: "3px 20px", fontSize: 12, cursor: loading || !input.trim() ? "not-allowed" : "pointer",
-                    fontWeight: 600, borderRadius: 2,
-                  }}>
-                    {loading ? "⏳ 처리 중..." : "▶ 실행 (F9)"}
-                  </button>
-                </td>
-              </tr>
-
-              {/* 빈 행 */}
-              <tr style={{ height: 18 }}>
-                {cell("", "14%", XL.rowBg)}
-                <td colSpan={4} style={{ border: `1px solid ${XL.border}`, background: XL.rowBg }} />
-              </tr>
-
-              {/* 결과 영역 */}
-              {error && (
-                <tr style={{ height: 60 }}>
-                  {cell("#ERROR!", "14%", "#ffe8e8", true, true)}
-                  <td colSpan={4} style={{ border: `1px solid ${XL.red}`, padding: "8px", background: "#fff8f8", color: XL.red, fontSize: 12, whiteSpace: "pre-line" }}>
-                    {error}
-                  </td>
-                </tr>
-              )}
-
-              {result && !error && (
-                <>
-                  <tr style={{ height: 18, background: XL.gridBg }}>
-                    {["결과", "원문", "조정 결과", "진단", "처리 모델"].map((h, i) => (
-                      <th key={i} style={{ border: `1px solid ${XL.border}`, padding: "2px 8px", fontSize: 11, color: XL.txt2, fontWeight: 600, background: XL.gridBg, textAlign: "center" }}>{h}</th>
-                    ))}
-                  </tr>
-
-                  <tr style={{ height: 80 }}>
-                    {cell("출력값", "14%", XL.accentLight, true, true)}
-                    <td style={{ border: `1px solid ${XL.border}`, padding: "6px 8px", background: XL.rowBg, fontSize: 12, color: XL.txt, verticalAlign: "top" }}>
-                      {input}
-                    </td>
-                    <td style={{ border: `2px solid ${XL.cellSelectBorder}`, padding: "6px 8px", background: XL.cellSelect, fontSize: 12, color: XL.txt, verticalAlign: "top" }}>
-                      {result.result.length > 2000 ? result.result.slice(0, 2000) + "…" : result.result}
-                    </td>
-                    <td style={{ border: `1px solid ${XL.border}`, padding: "6px 8px", background: XL.rowBg, verticalAlign: "top" }}>
-                      <span style={{ color: diagColor(result.diagnosis), fontWeight: 600, fontSize: 11 }}>
-                        {result.diagnosis === "쿠션어 과다" ? "▲ 과다" : result.diagnosis === "쿠션어 부족" ? "▼ 부족" : "● 적절"}
-                      </span>
-                      <br />
-                      <span style={{ fontSize: 10, color: XL.txt2 }}>{result.reason}</span>
-                    </td>
-                    <td style={{ border: `1px solid ${XL.border}`, padding: "6px 8px", background: XL.rowBg, fontSize: 11, color: XL.txt2, verticalAlign: "top" }}>
-                      {result.provider}
-                    </td>
-                  </tr>
-
-                  {/* 변경사항 */}
-                  {result.changes?.map((c: string, i: number) => (
-                    <tr key={i} style={{ height: 20 }}>
-                      {cell(i === 0 ? "변경사항" : "", "14%", XL.rowAlt, i === 0, true)}
-                      <td colSpan={3} style={{ border: `1px solid ${XL.border}`, padding: "2px 8px", fontSize: 11, color: XL.txt2, background: XL.rowAlt }}>
-                        · {c}
-                      </td>
-                      <td style={{ border: `1px solid ${XL.border}`, background: XL.rowAlt }}>
-                        {i === 0 && (
-                          <button onClick={() => { navigator.clipboard.writeText(result.result); setCopied(true); setTimeout(() => setCopied(false), 2000); }} style={{
-                            background: XL.btnBg, border: `1px solid ${XL.borderDark}`,
-                            padding: "1px 8px", fontSize: 10, cursor: "pointer", color: copied ? XL.accent : XL.txt,
-                          }}>{copied ? "✓ 복사됨" : "📋 복사"}</button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-
-                  {/* 번역 */}
-                  <tr style={{ height: 18 }}>
-                    {cell("", "14%", XL.rowBg)}
-                    <td colSpan={4} style={{ border: `1px solid ${XL.border}`, background: XL.rowBg }} />
-                  </tr>
-                  <tr style={{ height: 28 }}>
-                    {cell("번역", "14%", XL.gridBg, true, true)}
-                    <td colSpan={4} style={{ border: `1px solid ${XL.border}`, padding: "3px 8px", background: XL.rowBg }}>
-                      <div style={{ display: "flex", gap: 4, alignItems: "center", flexWrap: "wrap" }}>
-                        <button onClick={() => { setShowTranslate(!showTranslate); setTranslation(null); setSelectedLang(""); }} style={{
-                          background: showTranslate ? XL.accent : XL.btnBg,
-                          border: `1px solid ${showTranslate ? XL.accent : XL.borderDark}`,
-                          color: showTranslate ? "#fff" : XL.txt,
-                          padding: "2px 10px", fontSize: 11, cursor: "pointer", borderRadius: 2,
-                        }}>🌐 외국어 번역</button>
-                        {showTranslate && LANGUAGES.map(l => (
-                          <button key={l} onClick={() => { setSelectedLang(l); setTranslation(null); }} style={{
-                            background: selectedLang === l ? XL.accentLight : XL.btnBg,
-                            border: `1px solid ${selectedLang === l ? XL.accent : XL.borderDark}`,
-                            color: selectedLang === l ? XL.accent : XL.txt,
-                            padding: "2px 8px", fontSize: 11, cursor: "pointer", borderRadius: 2,
-                          }}>{l}</button>
-                        ))}
-                        {showTranslate && selectedLang === "기타" && (
-                          <input value={customLang} onChange={e => setCustomLang(e.target.value)}
-                            placeholder="언어 입력" style={{ border: `1px solid ${XL.borderDark}`, padding: "2px 6px", fontSize: 11, width: 80 }} />
-                        )}
-                        {showTranslate && selectedLang && (
-                          <button onClick={translate} disabled={translating} style={{
-                            background: XL.accent, color: "#fff", border: "none",
-                            padding: "2px 10px", fontSize: 11, cursor: "pointer", borderRadius: 2,
-                          }}>{translating ? "번역 중..." : "▶ 번역"}</button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-
-                  {translation && (
-                    <>
-                      <tr style={{ height: 60 }}>
-                        {cell("번역 결과", "14%", XL.accentLight, true, true)}
-                        <td style={{ border: `1px solid ${XL.border}`, padding: "6px 8px", background: XL.rowBg, fontSize: 12, color: XL.txt2 }}>
-                          {selectedLang === "기타" ? customLang : selectedLang}
-                        </td>
-                        <td colSpan={2} style={{ border: `2px solid ${XL.cellSelectBorder}`, padding: "6px 8px", background: XL.cellSelect, fontSize: 12, color: XL.txt }}>
-                          {translation.result}
-                        </td>
-                        <td style={{ border: `1px solid ${XL.border}`, padding: "4px", background: XL.rowBg, textAlign: "center" }}>
-                          <button onClick={() => { navigator.clipboard.writeText(translation.result); setCopiedTrans(true); setTimeout(() => setCopiedTrans(false), 2000); }} style={{
-                            background: XL.btnBg, border: `1px solid ${XL.borderDark}`,
-                            padding: "1px 8px", fontSize: 10, cursor: "pointer", color: copiedTrans ? XL.accent : XL.txt,
-                          }}>{copiedTrans ? "✓ 복사됨" : "📋 복사"}</button>
-                        </td>
-                      </tr>
-                      <tr style={{ height: 40 }}>
-                        {cell("문화 참고", "14%", XL.gridBg, true, true)}
-                        <td colSpan={4} style={{ border: `1px solid ${XL.border}`, padding: "6px 8px", background: "#fffbe6", fontSize: 11, color: XL.txt2, fontStyle: "italic" }}>
-                          💬 {LANG_CULTURE[selectedLang] || LANG_CULTURE["기타"]}
-                        </td>
-                      </tr>
-                    </>
-                  )}
-                </>
-              )}
-            </tbody>
-          </table>
-
-          {/* 하단 광고 */}
-          <div style={{ margin: "16px", border: `1px dashed ${XL.borderDark}`, height: 90, background: XL.rowAlt }} />
-
-          {/* 인스타 */}
-          <div style={{ textAlign: "center", padding: "8px", fontSize: 11, color: XL.txt2 }}>
-            <a href="https://instagram.com/photobrush_kor" target="_blank" rel="noopener noreferrer" style={{ color: XL.txt2, textDecoration: "none" }}>
-              @photobrush_kor
-            </a>
+        {/* 원문 입력 */}
+        <div style={{ marginBottom: "1rem" }}>
+          <p style={{ fontSize: 13, color: txt2, marginBottom: 8 }}>원문 메시지</p>
+          <textarea
+            value={input}
+            onChange={e => setInput(e.target.value.slice(0, 500))}
+            placeholder="평소 말투로 그냥 써주세요. 예) 내일까지 보내줘. 확인 좀 해봐."
+            rows={4}
+            style={{
+              width: "100%", boxSizing: "border-box",
+              background: surface, border: `0.5px solid ${border}`,
+              borderRadius: 10, padding: "12px 14px",
+              fontSize: 15, color: txt, resize: "vertical",
+              fontFamily: "inherit", outline: "none",
+            }}
+          />
+          <div style={{ textAlign: "right", fontSize: 11, color: input.length > 450 ? "#e24b4a" : txt2, marginTop: 4 }}>
+            {input.length} / 500
           </div>
         </div>
-      </div>
 
-      {/* 하단 시트 탭 */}
-      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: XL.toolbarBg, borderTop: `1px solid ${XL.toolbarBorder}`, display: "flex", alignItems: "center", padding: "2px 8px", gap: 2 }}>
-        <div style={{ background: XL.accent, color: "#fff", padding: "3px 16px", fontSize: 11, fontWeight: 600, borderRadius: "2px 2px 0 0" }}>
-          쿠션어변환
+        {/* 버튼 */}
+        <button onClick={analyze} disabled={loading || !input.trim()} style={{
+          width: "100%", padding: "13px",
+          background: loading || !input.trim() ? surface2 : accent,
+          color: loading || !input.trim() ? txt2 : "#fff",
+          border: "none", borderRadius: 10, fontSize: 15,
+          fontWeight: 500, cursor: loading || !input.trim() ? "not-allowed" : "pointer",
+          transition: "all 0.2s"
+        }}>
+          {loading ? "조정 중…" : "쿠션어 조정하기"}
+        </button>
+
+        {/* 에러 */}
+        {error && (
+          <div style={{
+            marginTop: "1.5rem", background: dark ? "#2a1a1a" : "#fcebeb",
+            border: `0.5px solid ${dark ? "#a32d2d" : "#f09595"}`,
+            borderRadius: 10, padding: "1.5rem",
+            color: dark ? "#f09595" : "#a32d2d", fontSize: 15,
+            whiteSpace: "pre-line", textAlign: "center", lineHeight: 1.8
+          }}>
+            {error}
+          </div>
+        )}
+
+        {/* 결과 */}
+        {result && !error && (() => {
+          const dc = diagColor(result.diagnosis);
+          return (
+            <div style={{ marginTop: "1.5rem" }}>
+              <div style={{ display: "inline-block", background: dc.bg, color: dc.txt, fontSize: 12, fontWeight: 500, padding: "4px 12px", borderRadius: 20, marginBottom: 12 }}>
+                {result.diagnosis} — {result.reason}
+              </div>
+              <div style={{ background: surface, border: `0.5px solid ${border}`, borderRadius: 10, padding: "1rem 1.25rem", marginBottom: 12 }}>
+                <p style={{ fontSize: 15, color: txt, margin: 0, lineHeight: 1.7 }}>
+                  {result.result.length > 2000 ? result.result.slice(0, 2000) + "…" : result.result}
+                </p>
+              </div>
+              {result.changes?.length > 0 && (
+                <div style={{ marginBottom: 12 }}>
+                  {result.changes.map((c: string, i: number) => (
+                    <div key={i} style={{ fontSize: 13, color: txt2, padding: "4px 0", display: "flex", gap: 8 }}>
+                      <span style={{ color: accent, flexShrink: 0 }}>·</span>
+                      <span>{c}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+                <button onClick={() => { navigator.clipboard.writeText(result.result); setCopied(true); setTimeout(() => setCopied(false), 2000); }} style={{
+                  background: surface2, border: `0.5px solid ${border}`, borderRadius: 8, padding: "8px 16px", fontSize: 13, color: copied ? accentTxt : txt2, cursor: "pointer"
+                }}>{copied ? "복사됨 ✓" : "결과 복사"}</button>
+                <span style={{ fontSize: 12, color: txt2 }}>{result.provider} 로 처리됨</span>
+              </div>
+
+              {/* 번역 버튼 */}
+              <button onClick={() => { setShowTranslate(!showTranslate); setTranslation(null); setSelectedLang(""); setCustomLang(""); }} style={{
+                background: showTranslate ? accentBg : surface2,
+                border: `0.5px solid ${showTranslate ? accent : border}`,
+                borderRadius: 8, padding: "8px 16px", fontSize: 13,
+                color: showTranslate ? accentTxt : txt2, cursor: "pointer"
+              }}>🌐 외국어로 번역하기</button>
+
+              {/* 번역 패널 */}
+              {showTranslate && (
+                <div style={{ marginTop: 12, background: surface, border: `0.5px solid ${border}`, borderRadius: 12, padding: "1.25rem" }}>
+                  <p style={{ fontSize: 13, color: txt2, margin: "0 0 10px" }}>번역할 언어 선택</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
+                    {LANGUAGES.map(l => (
+                      <button key={l} onClick={() => { setSelectedLang(l); setTranslation(null); }} style={{
+                        background: selectedLang === l ? accentBg : surface2,
+                        border: `0.5px solid ${selectedLang === l ? accent : border}`,
+                        borderRadius: 20, padding: "6px 14px", fontSize: 13,
+                        color: selectedLang === l ? accentTxt : txt2, cursor: "pointer"
+                      }}>{l}</button>
+                    ))}
+                  </div>
+                  {selectedLang === "기타" && (
+                    <input value={customLang} onChange={e => setCustomLang(e.target.value)}
+                      placeholder="언어 입력 (예: 베트남어, 아랍어)"
+                      style={{ width: "100%", boxSizing: "border-box", background: surface2, border: `0.5px solid ${border}`, borderRadius: 8, padding: "8px 12px", fontSize: 14, color: txt, marginBottom: 12, outline: "none" }} />
+                  )}
+                  {selectedLang && (
+                    <button onClick={translate} disabled={translating || (selectedLang === "기타" && !customLang)} style={{
+                      background: translating ? surface2 : accent, color: translating ? txt2 : "#fff",
+                      border: "none", borderRadius: 8, padding: "8px 20px", fontSize: 14,
+                      cursor: translating ? "not-allowed" : "pointer", marginBottom: 12
+                    }}>{translating ? "번역 중…" : "번역하기"}</button>
+                  )}
+                  {translation && (
+                    <div>
+                      <div style={{ background: surface2, borderRadius: 10, padding: "1rem", marginBottom: 12 }}>
+                        <p style={{ fontSize: 13, color: txt2, margin: "0 0 6px" }}>{selectedLang === "기타" ? customLang : selectedLang} 번역</p>
+                        <p style={{ fontSize: 15, color: txt, margin: 0, lineHeight: 1.7 }}>{translation.result}</p>
+                      </div>
+                      <button onClick={() => { navigator.clipboard.writeText(translation.result); setCopiedTrans(true); setTimeout(() => setCopiedTrans(false), 2000); }} style={{
+                        background: surface2, border: `0.5px solid ${border}`, borderRadius: 8, padding: "6px 14px", fontSize: 13, color: copiedTrans ? accentTxt : txt2, cursor: "pointer", marginBottom: 16
+                      }}>{copiedTrans ? "복사됨 ✓" : "번역 복사"}</button>
+                      <div style={{ background: accentBg, borderRadius: 10, padding: "1rem", borderLeft: `3px solid ${accent}` }}>
+                        <p style={{ fontSize: 12, color: accentTxt, margin: "0 0 6px", fontWeight: 500 }}>
+                          💬 {selectedLang === "기타" ? customLang : selectedLang}권의 쿠션어 문화
+                        </p>
+                        <p style={{ fontSize: 13, color: accentTxt, margin: 0, lineHeight: 1.7, opacity: 0.9 }}>
+                          {LANG_CULTURE[selectedLang] || LANG_CULTURE["기타"]}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })()}
+
+        {/* 하단 광고 */}
+        <div style={{ border: `0.5px solid ${border}`, borderRadius: 10, height: 90, marginTop: "2rem" }} />
+
+        {/* 인스타그램 */}
+        <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
+          <a href="https://instagram.com/photobrush_kor" target="_blank" rel="noopener noreferrer"
+            style={{ fontSize: 12, color: txt2, textDecoration: "none" }}>
+            @photobrush_kor
+          </a>
         </div>
-        <div style={{ background: XL.btnBg, border: `1px solid ${XL.borderDark}`, color: XL.txt2, padding: "3px 16px", fontSize: 11, borderRadius: "2px 2px 0 0" }}>
-          사용법
-        </div>
-        <span style={{ marginLeft: "auto", fontSize: 10, color: XL.txt2 }}>준비</span>
+
       </div>
     </div>
   );
