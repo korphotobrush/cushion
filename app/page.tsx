@@ -13,7 +13,7 @@ const LANG_CULTURE: Record<string, string> = {
   "프랑스어": "프랑스어는 격식체(vous)와 비격식체(tu) 구분이 명확하고, 'Je me permets de...' 같은 표현이 쿠션어 역할을 해요.",
   "기타": "언어마다 쿠션어 문화가 달라요. 번역 결과와 함께 해당 언어권의 맥락을 참고해보세요.",
 };
-const STRENGTH_LABEL = ["", "버릇없게 😤", "약하게", "기본", "정중하게", "극존칭 😰"];
+const STRENGTH_LABEL = ["", "퉁명스럽게 😐", "약하게", "기본", "정중하게", "극존칭 😰"];
 
 function useTheme() {
   const [dark, setDark] = useState(false);
@@ -155,7 +155,6 @@ export default function Home() {
         <div style={{ display: "flex", gap: 6, marginBottom: "1rem", flexWrap: "wrap" }}>
           {[
             { key: "auto", label: "🤖 자동" },
-            { key: "gemini", label: "✦ Gemini" },
             { key: "groq-70b", label: "⚡ Groq 70B" },
             { key: "groq-8b", label: "⚡ Groq 8B" },
           ].map(m => (
@@ -189,13 +188,22 @@ export default function Home() {
           </div>
         </div>
 
+        {/* 주의 문구 */}
+        <div style={{
+          background: "#fffbe6", border: "0.5px solid #f0d060",
+          borderRadius: 8, padding: "8px 14px", marginBottom: "1rem",
+          fontSize: 12, color: "#888860"
+        }}>
+          ⚠️ 해당 웹은 참고용입니다 : 사용자의 불이익이 없도록 주의바라며, 오류가 반복되면 재 실행 해주세요
+        </div>
+
         {/* 버튼 */}
-        <button onClick={analyze} disabled={loading || !input.trim()} style={{
+        <button onClick={analyze}         disabled={loading || input.trim().length < 5} style={{
           width: "100%", padding: "13px",
-          background: loading || !input.trim() ? surface2 : accent,
-          color: loading || !input.trim() ? txt2 : "#fff",
+          background: loading || input.trim().length < 5 ? surface2 : accent,
+          color: loading || input.trim().length < 5 ? txt2 : "#fff",
           border: "none", borderRadius: 10, fontSize: 15,
-          fontWeight: 500, cursor: loading || !input.trim() ? "not-allowed" : "pointer",
+          fontWeight: 500, cursor: loading || input.trim().length < 5 ? "not-allowed" : "pointer",
           transition: "all 0.2s"
         }}>
           {loading ? "조정 중…" : "쿠션어 조정하기"}

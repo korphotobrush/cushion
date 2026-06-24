@@ -8,11 +8,11 @@ const RELATIONS = {
 };
 
 const STRENGTH_GUIDE = {
-  1: `반말에 욕설/비속어 포함해서 매우 거칠고 무례하게. 쿠션어 0%. 존댓말 절대 금지. 예) "야 진짜 존나 짜증나, 오늘 퇴근 전까지 빨리 끝내."`,
-  2: `반말이지만 욕은 없이 퉁명스럽게. 쿠션어 없음. 예) "오늘 퇴근 전까지 그냥 끝내."`,
-  3: `존댓말 기본. 쿠션어 1~2개. 바로 쓸 수 있는 자연스러운 수준. 예) "혹시 오늘 퇴근 전까지 완성해주실 수 있을까요?"`,
-  4: `존댓말 + 쿠션어 3~4개. 정중하고 배려 넘치게. 예) "바쁘신 중에 번거로우시겠지만, 혹시 괜찮으시다면 오늘 퇴근 전까지 완성해주시면 정말 감사하겠습니다."`,
-  5: `극존칭 + 쿠션어 최대. 한 문장을 5~10줄로 늘려서 쿠션어를 꽉꽉 채울 것. 읽는 사람이 부담스러울 정도로 과하게. 예) "정말 황송하고 죄송하기 그지없사오나, 혹시라도 시간이 허락하신다면, 너무 무리한 부탁인 줄 잘 알면서도 감히 여쭤보옵는데, 오늘 퇴근 전까지 완성이 가능하실지요?"`,
+  1: `매우 퉁명스럽고 무뚝뚝한 반말. 쿠션어 0%. 존댓말 절대 금지. 최대한 짧고 차갑게.`,
+  2: `반말이지만 1단계보다는 조금 부드럽게. 쿠션어 없음. 존댓말 금지.`,
+  3: `존댓말 기본. 쿠션어 1~2개. 바로 쓸 수 있는 자연스러운 수준.`,
+  4: `존댓말 + 쿠션어 3~4개. 정중하고 배려 넘치게.`,
+  5: `극존칭 + 쿠션어 최대. 한 문장을 5~10줄로 늘려서 쿠션어를 꽉꽉 채울 것. 읽는 사람이 부담스러울 정도로 과하게.`,
 };
 
 const SUSPICIOUS = [
@@ -30,14 +30,19 @@ const GROQ_FALLBACKS = [
   "llama-3.1-8b-instant",
 ];
 
-async function callGemini(prompt) {
+async function callGemini(prompt, strength = 3) {
+  const systemPrefix = strength === 1
+    ? `[CRITICAL INSTRUCTION] You MUST rewrite in RUDE Korean 반말 with swear words (욕설). NO 요/습니다. NO polite words. Be crude and blunt. This is required.\n\n`
+    : strength === 2
+    ? `[INSTRUCTION] Rewrite in casual Korean 반말 without swear words. NO 요/습니다 endings. Be terse.\n\n`
+    : "";
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
+        contents: [{ parts: [{ text: systemPrefix + prompt }] }],
         generationConfig: { maxOutputTokens: 1024 },
       }),
     }
@@ -149,14 +154,14 @@ JSON만 출력: {"result": "번역 결과"}`;
 - diagnosis: "쿠션어 과다" 또는 "쿠션어 부족" 또는 "적절함" 중 하나만
 
 JSON만 출력:
-{"diagnosis":"쿠션어 부족","reason":"반말이라 존댓말 필요","result":"혹시 오늘 퇴근 전까지 완성해주실 수 있을까요?","changes":["반말을 존댓말로","쿠션어 추가"]}`;
+{"diagnosis":"쿠션어 부족","reason":"진단 이유","result":"조정된 실제 메시지","changes":["변경사항1","변경사항2"]}`;
     }
 
     let raw = "";
     let provider = "gemini";
 
     if (model === "gemini") {
-      raw = await callGemini(prompt);
+      raw = await callGemini(prompt, strength);
       provider = "gemini";
     } else if (model === "groq-70b") {
       raw = await callGroq(prompt, "llama-3.3-70b-versatile");
