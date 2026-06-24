@@ -123,8 +123,8 @@ export default function Home() {
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 500, margin: 0, color: txt }}>쿠션어 밸런서</h1>
-            <p style={{ fontSize: 13, color: txt2, margin: "4px 0 0" }}>말투를 상황에 맞게 자동 조정해드려요</p>
+            <h1 style={{ fontSize: 22, fontWeight: 500, margin: 0, color: txt }}>개떡같이 말해도 찰떡같이</h1>
+            <p style={{ fontSize: 13, color: txt2, margin: "4px 0 0" }}>거지같이 말해도 상황에 맞게 자동 조정해드려요</p>
           </div>
           <button onClick={toggle} style={{
             background: surface2, border: `0.5px solid ${border}`, borderRadius: 20,
@@ -133,9 +133,6 @@ export default function Home() {
             {manual ? (dark ? "🌙 다크" : "☀️ 라이트") : "⚡ 자동"}
           </button>
         </div>
-
-        {/* 상단 광고 */}
-        {adBox("0")}
 
         {/* 상대방 선택 */}
         <div style={{ marginTop: "1.5rem", marginBottom: "1rem" }}>
@@ -385,6 +382,18 @@ export default function Home() {
 
         {/* 하단 광고 */}
         {adBox("2rem")}
+
+        {/* 인스타그램 */}
+        <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
+          <a
+            href="https://instagram.com/photobrush_kor"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ fontSize: 12, color: txt2, textDecoration: "none" }}
+          >
+            @photobrush_kor
+          </a>
+        </div>
 
       </div>
     </div>
