@@ -194,7 +194,7 @@ export default function Home() {
           borderRadius: 8, padding: "8px 14px", marginBottom: "1rem",
           fontSize: 12, color: "#888860"
         }}>
-          ⚠️ 해당 웹은 참고용입니다 : 사용자의 불이익이 없도록 주의바라며, 오류가 반복되면 재 실행 해주세요
+          ⚠️ 주의 : 해당 개떡찰떡웹은 완벽하지 않으니 알아서 처신 잘하십쇼
         </div>
 
         {/* 버튼 */}
@@ -314,11 +314,16 @@ export default function Home() {
         {/* 하단 광고 */}
         <div style={{ border: `0.5px solid ${border}`, borderRadius: 10, height: 90, marginTop: "2rem" }} />
 
-        {/* 인스타그램 */}
-        <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
+        {/* 인스타그램 + 관련 서비스 */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1.5rem" }}>
           <a href="https://instagram.com/photobrush_kor" target="_blank" rel="noopener noreferrer"
             style={{ fontSize: 12, color: txt2, textDecoration: "none" }}>
             @photobrush_kor
+          </a>
+          <a href="https://danhobax.vercel.app" target="_blank" rel="noopener noreferrer"
+            style={{ fontSize: 12, color: txt2, textDecoration: "none" }}>
+            싫은소리못하는사람의마음의소리로 이동
+          
           </a>
         </div>
 
