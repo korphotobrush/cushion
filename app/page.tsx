@@ -48,6 +48,7 @@ export default function Home() {
   const [translation, setTranslation] = useState<any>(null);
   const [translating, setTranslating] = useState(false);
   const [copiedTrans, setCopiedTrans] = useState(false);
+  const [isFallback, setIsFallback] = useState(false); // 추가
 
   const analyze = async () => {
     if (!input.trim()) return;
@@ -56,6 +57,7 @@ export default function Home() {
     setResult(null);
     setShowTranslate(false);
     setTranslation(null);
+    setIsFallback(false); // 초기화
     try {
       const res = await fetch("/api/cushion", {
         method: "POST",
@@ -63,8 +65,17 @@ export default function Home() {
         body: JSON.stringify({ message: input, relation: RELATIONS[relation], strength, model }),
       });
       const data = await res.json();
-      if (!res.ok) setError(data.error || "오류가 발생했어요.");
-      else setResult(data);
+      if (!res.ok) {
+        // 429 rate limit 전용 메시지
+        if (res.status === 429) {
+          setError("요청이 너무 많아요. 잠시 후 다시 시도해주세요. 🙏");
+        } else {
+          setError(data.error || "오류가 발생했어요.");
+        }
+      } else {
+        setResult(data);
+        setIsFallback(!!data.isFallback); // 폴백 여부 반영
+      }
     } catch { setError("네트워크 오류가 발생했어요."); }
     setLoading(false);
   };
@@ -198,7 +209,7 @@ export default function Home() {
         </div>
 
         {/* 버튼 */}
-        <button onClick={analyze}         disabled={loading || input.trim().length < 5} style={{
+        <button onClick={analyze} disabled={loading || input.trim().length < 5} style={{
           width: "100%", padding: "13px",
           background: loading || input.trim().length < 5 ? surface2 : accent,
           color: loading || input.trim().length < 5 ? txt2 : "#fff",
@@ -235,6 +246,14 @@ export default function Home() {
                   {result.result.length > 2000 ? result.result.slice(0, 2000) + "…" : result.result}
                 </p>
               </div>
+
+              {/* 폴백 안내 - 추가 */}
+              {isFallback && (
+                <p style={{ fontSize: 12, color: txt2, marginBottom: 10, display: "flex", alignItems: "center", gap: 4 }}>
+                  ⚡ 현재 응답 속도가 평소보다 느릴 수 있어요.
+                </p>
+              )}
+
               {result.changes?.length > 0 && (
                 <div style={{ marginBottom: 12 }}>
                   {result.changes.map((c: string, i: number) => (
@@ -314,16 +333,22 @@ export default function Home() {
         {/* 하단 광고 */}
         <div style={{ border: `0.5px solid ${border}`, borderRadius: 10, height: 90, marginTop: "2rem" }} />
 
-        {/* 인스타그램 + 관련 서비스 */}
+        {/* 푸터 */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1.5rem" }}>
-          <a href="https://instagram.com/photobrush_kor" target="_blank" rel="noopener noreferrer"
-            style={{ fontSize: 12, color: txt2, textDecoration: "none" }}>
-            @photobrush_kor
-          </a>
+          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+            <a href="https://instagram.com/photobrush_kor" target="_blank" rel="noopener noreferrer"
+              style={{ fontSize: 12, color: txt2, textDecoration: "none" }}>
+              @photobrush_kor
+            </a>
+            {/* 개인정보처리방침 링크 추가 */}
+            <a href="/privacy"
+              style={{ fontSize: 12, color: txt2, textDecoration: "none", opacity: 0.6 }}>
+              개인정보처리방침
+            </a>
+          </div>
           <a href="https://danhobax.vercel.app" target="_blank" rel="noopener noreferrer"
             style={{ fontSize: 12, color: txt2, textDecoration: "none" }}>
             싫은소리못하는사람의마음의소리로 이동
-          
           </a>
         </div>
 
