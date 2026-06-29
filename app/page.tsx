@@ -1,4 +1,7 @@
 "use client";
+
+import { useState, useEffect } from "react";
+
 function AdblockOverlay() {
   const [blocked, setBlocked] = useState(false);
 
@@ -65,8 +68,6 @@ function AdblockOverlay() {
     </div>
   );
 }
-import { useState, useEffect } from "react";
-
 const RELATIONS = ["상사/클라이언트", "동료", "친구/후배", "공식 문서"];
 const RELATION_DESC = ["격식체 + 쿠션어 최대", "적당한 완충", "편하게 직접적으로", "문어체 정제"];
 const LANGUAGES = ["영어", "일본어", "중국어 (간체)", "스페인어", "프랑스어", "기타"];
