@@ -6,10 +6,12 @@ function AdblockOverlay() {
   const [blocked, setBlocked] = useState(false);
 
   useEffect(() => {
-  const img = new Image();
-  img.onload = () => setBlocked(false);
-  img.onerror = () => setBlocked(true);
-  img.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?t=" + Date.now();
+  setTimeout(() => {
+    const adEl = document.querySelector('.kakao_ad_area');
+    if (!adEl || (adEl as HTMLElement).style.display === 'none') {
+      setBlocked(true);
+    }
+  }, 2000);
 }, []);
 
   const recheck = () => {
