@@ -331,7 +331,11 @@ export default function Home() {
         })()}
 
         {/* 하단 광고 */}
-        <div style={{ border: `0.5px solid ${border}`, borderRadius: 10, height: 90, marginTop: "2rem" }} />
+<div style={{ marginTop: "2rem", textAlign: "center" }}
+  dangerouslySetInnerHTML={{
+    __html: `<ins class="kakao_ad_area" style="display:none;width:100%;" data-ad-unit="DAN-GYJSgSJ19qtN6W0g" data-ad-width="320" data-ad-height="100"></ins>`
+  }}
+/>
 
         {/* 푸터 */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1.5rem" }}>

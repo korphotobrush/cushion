@@ -28,7 +28,12 @@ export default function RootLayout({
       <body>
         {children}
         <Analytics />
+        <script
+          async
+          type="text/javascript"
+          src="https://t1.kakaocdn.net/kas/static/ba.min.js"
+        />
       </body>
-    </html>
+      </html>
   );
 }
