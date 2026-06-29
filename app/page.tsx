@@ -6,16 +6,23 @@ function AdblockOverlay() {
   const [blocked, setBlocked] = useState(false);
 
   useEffect(() => {
+  const classes = ["adsbox", "adsbygoogle", "ad-placement", "ad-unit"];
+  let detected = false;
+  let checked = 0;
+  classes.forEach(cls => {
     const testAd = document.createElement("div");
     testAd.innerHTML = "&nbsp;";
-    testAd.className = "adsbox";
+    testAd.className = cls;
     testAd.style.cssText = "position:absolute;top:-999px;left:-999px;width:1px;height:1px;";
     document.body.appendChild(testAd);
     setTimeout(() => {
-      if (testAd.offsetHeight === 0) setBlocked(true);
+      if (testAd.offsetHeight === 0) detected = true;
       document.body.removeChild(testAd);
-    }, 300);
-  }, []);
+      checked++;
+      if (checked === classes.length && detected) setBlocked(true);
+    }, 500);
+  });
+}, []);
 
   const recheck = () => {
     const testAd = document.createElement("div");
