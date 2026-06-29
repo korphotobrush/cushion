@@ -16,8 +16,9 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
+        <meta name="naver-site-verification" content="a9ad2311e84f4aa6b69655799bac5422d55f4174" /> 
         <meta name="google-site-verification" content="h5iXLENwifm0LeGa8DqNpKmW6Y0y81brKpxfxplEjpE" />
-        
+
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5549051245996079"
