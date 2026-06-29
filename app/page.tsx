@@ -11,7 +11,7 @@ function AdblockOverlay() {
     if (!adEl || (adEl as HTMLElement).style.display === 'none') {
       setBlocked(true);
     }
-  }, 2000);
+  }, 500);
 }, []);
 
   const recheck = () => {
