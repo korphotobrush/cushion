@@ -1,6 +1,71 @@
 "use client";
+function AdblockOverlay() {
+  const [blocked, setBlocked] = useState(false);
 
-import { useState } from "react";
+  useEffect(() => {
+    const testAd = document.createElement("div");
+    testAd.innerHTML = "&nbsp;";
+    testAd.className = "adsbox";
+    testAd.style.cssText = "position:absolute;top:-999px;left:-999px;width:1px;height:1px;";
+    document.body.appendChild(testAd);
+    setTimeout(() => {
+      if (testAd.offsetHeight === 0) setBlocked(true);
+      document.body.removeChild(testAd);
+    }, 300);
+  }, []);
+
+  const recheck = () => {
+    const testAd = document.createElement("div");
+    testAd.innerHTML = "&nbsp;";
+    testAd.className = "adsbox";
+    testAd.style.cssText = "position:absolute;top:-999px;left:-999px;width:1px;height:1px;";
+    document.body.appendChild(testAd);
+    setTimeout(() => {
+      if (testAd.offsetHeight === 0) {
+        alert("광고 차단이 아직 해제되지 않았습니다.");
+      } else {
+        setBlocked(false);
+      }
+      document.body.removeChild(testAd);
+    }, 300);
+  };
+
+  if (!blocked) return null;
+
+  return (
+    <div style={{
+      position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
+      background: "rgba(0,0,0,0.92)", zIndex: 99999,
+      display: "flex", justifyContent: "center", alignItems: "center"
+    }}>
+      <div style={{
+        background: "#fff", borderRadius: 12, padding: "40px 36px",
+        maxWidth: 420, width: "90%", textAlign: "center",
+        boxShadow: "0 8px 40px rgba(0,0,0,0.4)"
+      }}>
+        <div style={{ fontSize: 48, marginBottom: 16 }}>🚫</div>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8, color: "#111" }}>
+          광고 차단이 감지되었습니다
+        </h2>
+        <p style={{ fontSize: 13, color: "#888", marginBottom: 20 }}>Ad Blocker Detected</p>
+        <p style={{ fontSize: 14, color: "#444", lineHeight: 1.8, marginBottom: 24 }}>
+          이 서비스는 광고 수익으로 무료 운영됩니다.<br />
+          광고 차단 프로그램을 해제한 후 이용해 주세요.<br /><br />
+          <small>This service is free thanks to ads.<br />
+          Please disable your ad blocker to continue.</small>
+        </p>
+        <button onClick={recheck} style={{
+          background: "#111", color: "#fff", border: "none",
+          borderRadius: 8, padding: "12px 28px", fontSize: 14,
+          cursor: "pointer"
+        }}>
+          해제했어요 / I've disabled it
+        </button>
+      </div>
+    </div>
+  );
+}
+import { useState, useEffect } from "react";
 
 const RELATIONS = ["상사/클라이언트", "동료", "친구/후배", "공식 문서"];
 const RELATION_DESC = ["격식체 + 쿠션어 최대", "적당한 완충", "편하게 직접적으로", "문어체 정제"];
@@ -106,6 +171,7 @@ export default function Home() {
 
   return (
     <div style={{ minHeight: "100vh", background: bg, color: txt, fontFamily: "sans-serif", transition: "background 0.3s" }}>
+      <AdblockOverlay />
       <div style={{ maxWidth: 680, margin: "0 auto", padding: "2rem 1rem 4rem" }}>
 
         {/* Header */}
