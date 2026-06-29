@@ -13,10 +13,7 @@ function AdblockOverlay() {
 }, []);
 
   const recheck = () => {
-  const img = new Image();
-  img.onload = () => setBlocked(false);
-  img.onerror = () => alert("광고 차단이 아직 해제되지 않았습니다.");
-  img.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?t=" + Date.now();
+  window.location.reload();
 };
 
   if (!blocked) return null;
