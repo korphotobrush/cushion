@@ -6,39 +6,18 @@ function AdblockOverlay() {
   const [blocked, setBlocked] = useState(false);
 
   useEffect(() => {
-  const classes = ["adsbox", "adsbygoogle", "ad-placement", "ad-unit"];
-  let detected = false;
-  let checked = 0;
-  classes.forEach(cls => {
-    const testAd = document.createElement("div");
-    testAd.innerHTML = "&nbsp;";
-    testAd.className = cls;
-    testAd.style.cssText = "position:absolute;top:-999px;left:-999px;width:1px;height:1px;";
-    document.body.appendChild(testAd);
-    setTimeout(() => {
-      if (testAd.offsetHeight === 0) detected = true;
-      document.body.removeChild(testAd);
-      checked++;
-      if (checked === classes.length && detected) setBlocked(true);
-    }, 500);
-  });
+  const img = new Image();
+  img.onload = () => setBlocked(false);
+  img.onerror = () => setBlocked(true);
+  img.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?t=" + Date.now();
 }, []);
 
   const recheck = () => {
-    const testAd = document.createElement("div");
-    testAd.innerHTML = "&nbsp;";
-    testAd.className = "adsbox";
-    testAd.style.cssText = "position:absolute;top:-999px;left:-999px;width:1px;height:1px;";
-    document.body.appendChild(testAd);
-    setTimeout(() => {
-      if (testAd.offsetHeight === 0) {
-        alert("광고 차단이 아직 해제되지 않았습니다.");
-      } else {
-        setBlocked(false);
-      }
-      document.body.removeChild(testAd);
-    }, 300);
-  };
+  const img = new Image();
+  img.onload = () => setBlocked(false);
+  img.onerror = () => alert("광고 차단이 아직 해제되지 않았습니다.");
+  img.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?t=" + Date.now();
+};
 
   if (!blocked) return null;
 
