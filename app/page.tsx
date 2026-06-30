@@ -383,11 +383,15 @@ export default function Home() {
         })()}
 
         {/* 하단 광고 */}
-<div style={{ marginTop: "2rem", textAlign: "center" }}
-  dangerouslySetInnerHTML={{
-    __html: `<ins class="kakao_ad_area" style="display:none;width:100%;" data-ad-unit="DAN-GYJSgSJ19qtN6W0g" data-ad-width="320" data-ad-height="100"></ins>`
-  }}
-/>
+<div style={{ marginTop: "2rem", textAlign: "center" }}>
+  <ins
+    className="kakao_ad_area"
+    style={{ display: "none", width: "100%" }}
+    data-ad-unit="DAN-GYJSgSJ19qtN6W0g"
+    data-ad-width="320"
+    data-ad-height="100"
+  />
+</div>
 
         {/* 푸터 */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1.5rem" }}>
